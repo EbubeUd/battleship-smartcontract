@@ -39,5 +39,33 @@ contract("DataStorage", dataStorage=>{
         })
     });
 
+    it("Should set amount of time user last session lasted", ()=>{
+        let dataStorage;
+        let expectedResult = true;
+        let battleId = 1000;
+        let playTime = 600000;
+        return DataStorage.deployed()
+        .then(instance=>{
+            dataStorage = instance;
+            return dataStorage.setLastPlayTime(battleId, playTime);
+        })
+        .then(result=>{
+            assert.equal(result.receipt.status, expectedResult,expectedResult);
+        })
+    });
+
+    it("Should get amount of time user last session lasted", ()=>{
+        let dataStorage;
+        let battleId = 1000;
+        let playTime = 600000;
+        return DataStorage.deployed()
+        .then(instance=>{
+            dataStorage = instance;
+            return dataStorage.getLastPlayTime(battleId);
+        })
+        .then(result=>{
+            assert.equal(result.words[0],playTime);
+        })
+    });
 });
 
