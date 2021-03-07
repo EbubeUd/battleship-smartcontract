@@ -3,7 +3,7 @@
 pragma solidity ^0.7.5;
 pragma experimental ABIEncoderV2;
 import "./interfaces/IDataStorageSchema.sol";
-import "./GameLogic.sol";
+import "./interfaces/IGameLogic.sol";
 
 
 contract DataStorage is IDataStorageSchema {
@@ -24,7 +24,7 @@ contract DataStorage is IDataStorageSchema {
     
     
     address battleShipContractAddress;
-    GameLogic gameLogic;
+    IGameLogic gameLogic;
 
    
     mapping (ShipType => uint) shipSizes;
@@ -59,7 +59,7 @@ contract DataStorage is IDataStorageSchema {
         _;
     }
     
-    constructor(bool _isTest)   
+    constructor(bool _isTest, address _gameLogicAddress)   
     {
         gameId = 0;
         owner = payable(address(msg.sender));
@@ -70,6 +70,7 @@ contract DataStorage is IDataStorageSchema {
         shipSizes[ShipType.Carrier] = 5;
         maxNumberOfMissiles = 5;
         isTest = _isTest;
+        gameLogic = IGameLogic(_gameLogicAddress);
     }
     
 

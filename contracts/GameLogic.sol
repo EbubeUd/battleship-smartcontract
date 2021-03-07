@@ -4,7 +4,6 @@ pragma solidity ^0.7.5;
 pragma experimental ABIEncoderV2;
 import "./lib/ReentrancyGuard.sol";
 import "./interfaces/IDataStorageSchema.sol";
-import "./lib/HelperFunctions.sol";
 import "./lib/merkletree/MerkleProof.sol";
 
 
@@ -19,7 +18,6 @@ contract GameLogic is ReentrancyGuard, IDataStorageSchema
      uint8 gridDimensionY;
      uint8 gridSquare;
      
-     HelperFunctions helperFunction;
      
      
      
@@ -70,10 +68,9 @@ contract GameLogic is ReentrancyGuard, IDataStorageSchema
          shipSize[ShipType.Carrier] = 5;
          
          gridSquare = gridDimensionX * gridDimensionY;
-         helperFunction = new HelperFunctions();
      }
      
-     function getPositionsOccupiedByShips( ShipType[5] memory _ship, uint8[5] memory _startingPositions, AxisType[5] memory _axis) public view returns (uint8[] memory)
+     function getPositionsOccupiedByShips( ShipType[5] memory _ship, uint8[5] memory _startingPositions, AxisType[5] memory _axis) external view returns (uint8[] memory)
      {
          uint8[] memory combinedShipPositions = new uint8[](sumOfShipSizes);
          uint8[100] memory locationStatus;
@@ -114,18 +111,18 @@ contract GameLogic is ReentrancyGuard, IDataStorageSchema
          return combinedShipPositions;
      }
      
-     function getShipTypeFromIndex(uint8 _index) public view returns (ShipType)
+     function getShipTypeFromIndex(uint8 _index) external view returns (ShipType)
      {
          return shipFromIndex[_index];
      }
      
-     function getShipInxesFromShipType(ShipType _shipType) public view returns (uint8[] memory)
+     function getShipInxesFromShipType(ShipType _shipType) external view returns (uint8[] memory)
      {
          return shipIndexes[_shipType];
      }
      
   
-     function getStartingpositionAndAxis(bytes32[] memory positions) public pure returns(uint8[] memory, AxisType[5] memory)
+     function getStartingpositionAndAxis(bytes32[] memory positions) external pure returns(uint8[] memory, AxisType[5] memory)
      {
         uint8[5] memory startingPositions = [0, 0 , 0 , 0, 0];
         AxisType[5] memory axis;
@@ -210,7 +207,7 @@ contract GameLogic is ReentrancyGuard, IDataStorageSchema
      
      
     //Check that two arrays are equal
-    function CheckEqualArray(uint8[] memory _arr1, uint8[] memory _arr2) public pure returns (bool)
+    function CheckEqualArray(uint8[] memory _arr1, uint8[] memory _arr2) external pure returns (bool)
     {
         if(_arr1.length != _arr2.length) return false;
         for(uint i = 0; i < _arr1.length; i++)

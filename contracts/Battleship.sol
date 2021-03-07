@@ -5,9 +5,9 @@ pragma experimental ABIEncoderV2;
 import "./lib/ReentrancyGuard.sol";
 import "./interfaces/IDataStorage.sol";
 import "./interfaces/IDataStorageSchema.sol";
+import "./interfaces/IGameLogic.sol";
 import "./lib/biconomy/BasicMetaTransaction.sol";
 import "./lib/merkletree/MerkleProof.sol";
-import "./GameLogic.sol";
 
 
 
@@ -21,16 +21,16 @@ import "./GameLogic.sol";
     IDataStorage dataStorageContract;
     MerkleProof merkleProof;
     HelperFunctions helperFunctions;
-    GameLogic gameLogic;
+    IGameLogic gameLogic;
     address payable owner;
 
-    constructor(address _dataStorageContract) 
+    constructor(address _dataStorageContract, address _gameLogicAddress) 
     {
         //Set the shipSizes
         dataStorageContract = IDataStorage(_dataStorageContract);
         merkleProof = new MerkleProof();
-        gameLogic = new GameLogic();
-        owner = payable(address(msgSender()));
+        owner = payable(msgSender());
+        gameLogic = IGameLogic(_gameLogicAddress);
     }
     
     event PlayerJoinedLobby(address _playerAddress, GameMode _gameMode);
