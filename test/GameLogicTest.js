@@ -2,6 +2,13 @@ const GameLogic = artifacts.require("GameLogic");
 const IDataStorageSchema =artifacts.require("IDataStorageSchema");
 
 contract("GameLogic", accounts => {
+    let destroyerErrorMessage = "Ship Type must be of type of Destroyer";
+    let submarineErrorMessage = "Ship Type must be of type Submarine";
+    let cruiserErrorMessage = "Ship Type must be of type Cruiser";
+    let battleshipErrorMessage = "Ship Type must be of type Battleship";
+    let carrierErrorMessage = "Ship Type must be type of Carrier";
+
+
     it("Should Verify Destroyer Ship Index", () =>
     {
         let gameLogic;
@@ -17,7 +24,7 @@ contract("GameLogic", accounts => {
             assert.equal(
                 shipType.valueOf(),
                 IDataStorageSchema.ShipType.Destroyer,
-                "Ship Type must be of type of Destroyer"
+                destroyerErrorMessage
             );
             return gameLogic.getShipTypeFromIndex(1);
         })
@@ -25,10 +32,11 @@ contract("GameLogic", accounts => {
             assert.equal(
                 shipType.valueOf(),
                 IDataStorageSchema.ShipType.Destroyer,
-                "Ship Type must be of type of Destroyer"
+                destroyerErrorMessage
             );
         })
     });
+
 
     it("Should Verify Submarine Ship Index", () => 
     {
@@ -43,7 +51,7 @@ contract("GameLogic", accounts => {
             assert.equal(
                 shipType.valueOf(),
                 IDataStorageSchema.ShipType.Submarine,
-                "Ship Type must be of type Submarine"
+                submarineErrorMessage
             )
             return gameLogic.getShipTypeFromIndex(3);
         })
@@ -51,7 +59,7 @@ contract("GameLogic", accounts => {
             assert.equal(
                 shipType.valueOf(),
                 IDataStorageSchema.ShipType.Submarine,
-                "Ship Type must be of Type Submarine"
+                submarineErrorMessage
             )
             return gameLogic.getShipTypeFromIndex(4);
         })
@@ -59,8 +67,140 @@ contract("GameLogic", accounts => {
             assert.equal(
                 shipType.valueOf(),
                 IDataStorageSchema.ShipType.Submarine,
-                "Ship Type must be of Type Submarine"
+                submarineErrorMessage
             )
         })
+    });
+
+
+    it("Should verify Cruiser Ship Index", () => 
+    {
+        let gameLogic;
+
+        return GameLogic.deployed()
+        .then(instance => {
+            gameLogic = instance;
+            return gameLogic.getShipTypeFromIndex(5);
+        })
+        .then(shipType => {
+            assert.equal(
+                shipType.valueOf(),
+                IDataStorageSchema.ShipType.Cruiser,
+                cruiserErrorMessage
+            );
+            return gameLogic.getShipTypeFromIndex(6);
+        })
+        .then(shipType => {
+            assert.equal(
+                shipType.valueOf(),
+                IDataStorageSchema.ShipType.Cruiser,
+                cruiserErrorMessage
+            );
+            return gameLogic.getShipTypeFromIndex(7)
+        })
+        .then(shipType => {
+            assert.equal(
+                shipType.valueOf(),
+                IDataStorageSchema.ShipType.Cruiser,
+                cruiserErrorMessage
+            )
+        })
+    });
+
+
+    it("Should verify Battleship Index", () =>
+    {
+        let gameLogic;
+
+        return GameLogic.deployed()
+        .then(instance => {
+            gameLogic = instance;
+            return gameLogic.getShipTypeFromIndex(8);
+        })
+        .then(shipType => {
+            assert.equal(
+                shipType.valueOf(),
+                IDataStorageSchema.ShipType.Battleship,
+                battleshipErrorMessage
+            );
+            return gameLogic.getShipTypeFromIndex(9);
+        })
+        .then(shipType => {
+            assert.equal(
+                shipType.valueOf(),
+                IDataStorageSchema.ShipType.Battleship,
+                battleshipErrorMessage
+            );
+            return gameLogic.getShipTypeFromIndex(10);
+        })
+        .then(shipType => {
+            assert.equal(
+                shipType.valueOf(),
+                IDataStorageSchema.ShipType.Battleship,
+                battleshipErrorMessage
+            );
+            return gameLogic.getShipTypeFromIndex(11);
+        })
+        .then(shipType => {
+            assert.equal(
+                shipType.valueOf(),
+                IDataStorageSchema.ShipType.Battleship,
+                battleshipErrorMessage
+            )
+        })
+
+    });
+
+
+    it("Should verify Carrier Index", () => 
+    {
+        let gameLogic;
+
+        return GameLogic.deployed()
+        .then(instance => {
+            gameLogic = instance;
+            return gameLogic.getShipTypeFromIndex(12);
+        })
+        .then(shipType => {
+            assert.equal(
+                shipType.valueOf(),
+                IDataStorageSchema.ShipType.Carrier,
+                carrierErrorMessage
+            );
+            return gameLogic.getShipTypeFromIndex(13);
+        })
+        .then(shipType => {
+            assert.equal(
+                shipType.valueOf(),
+                IDataStorageSchema.ShipType.Carrier,
+                carrierErrorMessage
+            );
+            return gameLogic.getShipTypeFromIndex(14);
+        })
+        .then(shipType => {
+            assert.equal(
+                shipType.valueOf(),
+                IDataStorageSchema.ShipType.Carrier,
+                carrierErrorMessage
+            );
+            return gameLogic.getShipTypeFromIndex(15);
+        })
+        .then(shipType => {
+            assert.equal(
+                shipType.valueOf(),
+                IDataStorageSchema.ShipType.Carrier,
+                carrierErrorMessage
+            );
+            return gameLogic.getShipTypeFromIndex(16);
+        })
+        .then(shipType => {
+            assert.equal(
+                shipType.valueOf(),
+                IDataStorageSchema.ShipType.Carrier,
+                carrierErrorMessage
+            )
+        })
+   
     })
+
 });
