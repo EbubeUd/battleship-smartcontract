@@ -1,5 +1,7 @@
 const GameLogic = artifacts.require("GameLogic");
 const IDataStorageSchema =artifacts.require("IDataStorageSchema");
+const ShipType = IDataStorageSchema.ShipType;
+const AxisType = IDataStorageSchema.AxisType;
 
 contract("GameLogic", accounts => {
     let destroyerErrorMessage = "Ship Type must be of type of Destroyer";
@@ -363,5 +365,62 @@ contract("GameLogic", accounts => {
             )
         })
     });
+
+
+    it("Should Verify Positions on Y Axis", () => 
+    {
+        let ships = [ShipType.Destroyer, ShipType.Submarine, ShipType.Cruiser, ShipType.Battleship, ShipType.Carrier];
+        let startingPositions = [1,2,3,4,5];
+        let shipAxis = [AxisType.Y, AxisType.Y, AxisType.Y, AxisType.Y, AxisType.Y];
+        let expectedResult = [1, 11, 2, 12, 22, 3, 13, 23, 4, 14, 24, 34, 5, 15, 25, 35, 45];
+        return GameLogic.deployed()
+        .then(instance => {
+            return instance.getPositionsOccupiedByShips(ships, startingPositions, shipAxis);
+        })
+        .then(result => {
+
+            assert.equal(
+                result.length,
+                expectedResult.length,
+                "Length of positions must be equal"
+            )
+
+            for(let i = 0; i < expectedResult.length; i++)
+            {
+                assert.equal(
+                    result[i].words[0],
+                    expectedResult[i],
+                    "Incorrect Ship placement on the Y axis"
+                )
+            }
+        })
+    });
+
+    it("Should Verify Positions on X Axis", () =>
+    {
+        let ships = [ShipType.Destroyer, ShipType.Submarine, ShipType.Cruiser, ShipType.Battleship, ShipType.Carrier];
+        let startingPositions = [1,11,21,31,41];
+        let shipAxis = [AxisType.X, AxisType.X, AxisType.X, AxisType.X, AxisType.X];
+        let expectedResult = [1, 2, 11, 12, 13, 21, 22, 23, 31, 32, 33, 34, 41, 42, 43, 44, 45];
+
+
+
+        return GameLogic.deployed()
+        .then(instance => {
+            return instance.getPositionsOccupiedByShips(ships, startingPositions, shipAxis);
+        })
+        .then(result => {
+            for(let i = 0; i < expectedResult.length; i++)
+            {
+                assert.equal(
+                    result[i].words[0],
+                    expectedResult[i],
+                    "Incorrect Ship placement on the X axis"
+                )
+            }
+        })
+    })
+
+
 
 });
