@@ -29,7 +29,7 @@ contract GameLogic is ReentrancyGuard, IDataStorageSchema
          
          for(uint8 i = 0; i < sumOfShipSizes; i++)
          {
-             ShipType shipType;
+             ShipType shipType = ShipType.None;
              if(i == 0 || i == 1)
              {
                  shipType = ShipType.Destroyer;
@@ -113,6 +113,7 @@ contract GameLogic is ReentrancyGuard, IDataStorageSchema
      
      function getShipTypeFromIndex(uint8 _index) external view returns (ShipType)
      {
+         if(_index <  0 || _index > 16) return ShipType.None;
          return shipFromIndex[_index];
      }
      

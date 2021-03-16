@@ -6,8 +6,8 @@ contract("GameLogic", accounts => {
     let submarineErrorMessage = "Ship Type must be of type Submarine";
     let cruiserErrorMessage = "Ship Type must be of type Cruiser";
     let battleshipErrorMessage = "Ship Type must be of type Battleship";
-    let carrierErrorMessage = "Ship Type must be type of Carrier";
-
+    let carrierErrorMessage = "Ship Type must be of type Carrier";
+    let noShipErrorMessage = "Ship Type must be of Type None";
 
     it("Should Verify Destroyer Ship Index", () =>
     {
@@ -201,6 +201,37 @@ contract("GameLogic", accounts => {
             )
         })
    
+    });
+
+    
+    it("Should verify that Invalid Index returns No ship", () => 
+    {
+        let gameLogic;
+
+        GameLogic.deployed()
+        .then(instance => {
+            gameLogic = instance;
+            return gameLogic.getShipTypeFromIndex(-1);
+        })
+        .then(shipType => {
+            assert.equal(
+                shipType.valueOf(),
+                IDataStorageSchema.ShipType.None,
+                noShipErrorMessage
+            );
+            return gameLogic.getShipTypeFromIndex(17);
+        })
+        .then(shipType => {
+            assert.equal(
+                shipType.valueOf(),
+                IDataStorageSchema.ShipType.None,
+                noShipErrorMessage
+            )
+        })
+        
     })
+
+
+
 
 });
