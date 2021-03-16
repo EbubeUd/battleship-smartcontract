@@ -331,6 +331,37 @@ contract("GameLogic", accounts => {
             }
         
         })
-    })
+    });
+
+
+    it("Should Verify Equal Arrays", () =>
+    {
+        let gameLogic;
+        let array1 = [0,1,2,3,4,5,6,7,8];
+        let array2 = [0,1,2,3,4,5,6,7,8];
+        let array3 = [1,2,3,];
+        let array4 = [3,2,1];
+
+        return GameLogic.deployed()
+        .then(instance => {
+            gameLogic = instance;
+            return gameLogic.CheckEqualArray(array1, array2);
+        })
+        .then(result => {
+            assert.equal(
+                result.valueOf(),
+                true,
+                "Arrays are equal"
+            );
+            return gameLogic.CheckEqualArray(array3, array4);
+        })
+        .then(result => {
+            assert.equal(
+                result.valueOf(),
+                false,
+                "Arrays are not equal"
+            )
+        })
+    });
 
 });
