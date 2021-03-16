@@ -8,6 +8,7 @@ contract("GameLogic", accounts => {
     let battleshipErrorMessage = "Ship Type must be of type Battleship";
     let carrierErrorMessage = "Ship Type must be of type Carrier";
     let noShipErrorMessage = "Ship Type must be of Type None";
+    
 
     it("Should Verify Destroyer Ship Index", () =>
     {
@@ -208,17 +209,9 @@ contract("GameLogic", accounts => {
     {
         let gameLogic;
 
-        GameLogic.deployed()
+        return GameLogic.deployed()
         .then(instance => {
             gameLogic = instance;
-            return gameLogic.getShipTypeFromIndex(-1);
-        })
-        .then(shipType => {
-            assert.equal(
-                shipType.valueOf(),
-                IDataStorageSchema.ShipType.None,
-                noShipErrorMessage
-            );
             return gameLogic.getShipTypeFromIndex(17);
         })
         .then(shipType => {
@@ -229,9 +222,115 @@ contract("GameLogic", accounts => {
             )
         })
         
+    });
+
+    
+    it("Should verify Destroyer Ship Indexes", () => 
+    {
+
+        return GameLogic.deployed()
+        .then(instance => {
+            return instance.getShipInxesFromShipType(IDataStorageSchema.ShipType.Destroyer);
+        })
+        .then(result => {
+            let expectedResult = [0,1];
+
+            for(let i = 0; i< expectedResult.length; i++)
+            {
+                assert.equal(
+                    result[i].words[0],
+                    expectedResult[i],
+                    "Invalid Indexes for Destroyer"
+                );
+            }
+        })
+    });
+
+
+    it("Should Verify Submarine Ship Indexes", () => 
+    {
+
+        return GameLogic.deployed()
+        .then(instance => {
+            return instance.getShipInxesFromShipType(IDataStorageSchema.ShipType.Submarine);
+        })
+        .then(result => {
+            let expectedResult = [2,3,4];
+
+            for(let i = 0; i<expectedResult.length; i++)
+            {
+                assert(
+                    result[i].words[0],
+                    expectedResult[i],
+                    "Invalid Indexes for Submarine"
+                );
+            }
+        })
+    });
+
+
+    it("Should Verify Cruiser Ship Indexes", () => 
+    {
+        return GameLogic.deployed()
+        .then(instance => {
+            return instance.getShipInxesFromShipType(IDataStorageSchema.ShipType.Cruiser);
+        })
+        .then(result => {
+            let expectedResult = [5,6,7];
+
+            for(let i = 0; i< expectedResult.length; i++)
+            {
+                assert.equal(
+                    result[i].words[0],
+                    expectedResult[i],
+                    "Invalid Ship Indexes for Cruiser"
+                )
+            }
+        })
+    });
+
+
+    it("Should Verify Battleship Ship Indexes", () => 
+    {
+        return GameLogic.deployed()
+        .then(instance => {
+            return instance.getShipInxesFromShipType(IDataStorageSchema.ShipType.Battleship);
+        })
+        .then(result => {
+            let expectedResult = [8,9,10,11];
+
+            for(let i = 0; i < expectedResult.length; i++)
+            {
+                assert.equal(
+                    result[i].words[0],
+                    expectedResult[i],
+                    "Invalid Ship indexes for Battleship"
+                )
+            }
+        
+        })
+    });
+
+
+    it("Should Verify Carrier Ship Indexes", () =>
+    {
+        return GameLogic.deployed()
+        .then(instance => {
+            return instance.getShipInxesFromShipType(IDataStorageSchema.ShipType.Carrier);
+        })
+        .then(result => {
+            let expectedResult = [12,13,14,15,16];
+
+            for(let i = 0; i < expectedResult.length; i++)
+            {
+                assert.equal(
+                    result[i].words[0],
+                    expectedResult[i],
+                    "Invalid Ship indexes for Carrier"
+                )
+            }
+        
+        })
     })
-
-
-
 
 });
