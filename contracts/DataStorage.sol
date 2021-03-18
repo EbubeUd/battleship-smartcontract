@@ -40,7 +40,7 @@ contract DataStorage is IDataStorageSchema {
     mapping (uint => uint) lastPlayTime;
     mapping (uint => mapping(address => bytes32[])) correctPositionsHit;   //Holds the array of correct positions hit. used to determine The winner in a match
     mapping (uint => mapping(address => VerificationStatus)) battleVerification;    //Holds each player's verification status in a match.
-    mapping (uint => mapping(address => bytes32[])) revealedLeafs;  //Holds the revealed leafs of the suspected winner of the each battle.
+    mapping (uint => mapping(address => bytes)) revealedLeafs;  //Holds the revealed leafs of the suspected winner of the each battle.
     
     mapping (GameMode => LobbyModel) lobbyMap;
     mapping (GameMode => GameModeDetail) gameModeMapping;
@@ -280,13 +280,13 @@ contract DataStorage is IDataStorageSchema {
     }
     
     
-    function getRevealedLeafs(uint _battleId, address _playerAddress) external view returns(bytes32[] memory)
+    function getRevealedLeafs(uint _battleId, address _playerAddress) external view returns(bytes memory)
     {
         return revealedLeafs[_battleId][_playerAddress];
     }
     
     
-    function setRevealedLeafs(uint _battleId, address _playerAddress, bytes32[] memory _revealedLeafs) external returns(bool)
+    function setRevealedLeafs(uint _battleId, address _playerAddress, bytes memory _revealedLeafs) external returns(bool)
     {
         revealedLeafs[_battleId][_playerAddress] = _revealedLeafs;
         return true;

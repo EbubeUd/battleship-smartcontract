@@ -60,6 +60,6 @@ interface IDataStorage is IDataStorageSchema
     function getTransactionOfficer() external view returns(address);
     function setTransationOfficer(address payable _transactionOfficer) external returns(bool);
     
-    function getRevealedLeafs(uint _battleId, address _playerAddress) external view returns(bytes32[] memory);
-    function setRevealedLeafs(uint _battleId, address _playerAddress, bytes32[] memory _revealedLeafs) external returns(bool);
+    function getRevealedLeafs(uint _battleId, address _playerAddress) external view returns(bytes memory);
+    function setRevealedLeafs(uint _battleId, address _playerAddress, bytes memory _revealedLeafs) external returns(bool);
 }

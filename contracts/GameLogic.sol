@@ -18,9 +18,6 @@ contract GameLogic is ReentrancyGuard, IDataStorageSchema
      uint8 gridDimensionY;
      uint8 gridSquare;
      
-     
-     
-     
      constructor() 
      {
          gridDimensionX = 10;
@@ -123,23 +120,23 @@ contract GameLogic is ReentrancyGuard, IDataStorageSchema
      }
      
   
-     function getStartingpositionAndAxis(bytes32[] memory positions) external pure returns(uint8[] memory, AxisType[5] memory)
+     function getOrderedpositionAndAxis(bytes32[] memory positions) external pure returns(uint8[] memory, AxisType[5] memory)
      {
         uint8[5] memory startingPositions = [0, 0 , 0 , 0, 0];
         AxisType[5] memory axis;
         uint8[] memory orderedPositions = new uint8[](17);
-        bytes32 position;
         uint destroyerCount = 0;
         uint submarineCount = 0;
         uint cruiserCount = 0;
         uint battleshipCount = 0;
         uint carrierCount = 0;
-        
-         for(uint8 i = 0; i < positions.length; i++)
+   
+        bytes memory pos = getSliceBytes32(1, 5, positions[0]);
+
+         for(uint8 i = 0; i < positions.length; i+=5)
          {
-             position = positions[i];
-             byte shipIndex = position[0];
-             byte shipAxis = position[1];
+             byte shipIndex = pos[0];
+             byte shipAxis = pos[1];
              uint8 pIndex = i+1;
              
              
@@ -149,20 +146,24 @@ contract GameLogic is ReentrancyGuard, IDataStorageSchema
                  if(startingPositions[0] == 0)
                  {
                     startingPositions[0] = pIndex;
-                    axis[0] = shipAxis == '0' ? AxisType.X : AxisType.Y;
+                    axis[0] = shipAxis == '1' ? AxisType.X : shipAxis == '2'? AxisType.Y : AxisType.None;
                  }
+                 destroyerCount++;
                  orderedPositions[destroyerCount -1] = pIndex;
+                 
              }
              
-             //Subrine
+             //Submarine
              if(shipIndex == '2')
              {
                  if(startingPositions[1] == 0)
                  {
                     startingPositions[1] = pIndex;
-                    axis[1] = shipAxis == '0' ? AxisType.X : AxisType.Y;
+                    axis[1] = shipAxis == '1' ? AxisType.X : shipAxis ==  '2' ? AxisType.Y : AxisType.None;
                  }
+                 submarineCount++;
                  orderedPositions[submarineCount -1] = pIndex;
+                 
 
              }
              
@@ -172,9 +173,11 @@ contract GameLogic is ReentrancyGuard, IDataStorageSchema
                  if(startingPositions[2] == 0)
                  {
                     startingPositions[2] = pIndex;
-                    axis[2] = shipAxis == '0' ? AxisType.X : AxisType.Y;
+                    axis[2] = shipAxis == '1' ? AxisType.X : shipAxis == '2' ? AxisType.Y : AxisType.None;
                  }
+                   cruiserCount++;
                  orderedPositions[cruiserCount -1] = pIndex;
+               
              }
              
              //Battleship
@@ -183,9 +186,11 @@ contract GameLogic is ReentrancyGuard, IDataStorageSchema
                  if(startingPositions[3] == 0)
                  {
                     startingPositions[3] = pIndex;
-                    axis[3] = shipAxis == '0' ? AxisType.X : AxisType.Y;
+                    axis[3] = shipAxis == '1' ? AxisType.X : shipAxis == '2' ? AxisType.Y : AxisType.None;
                  }
+                 battleshipCount++;
                  orderedPositions[battleshipCount -1] = pIndex;
+                 
              }
              
              //Carrier
@@ -194,9 +199,11 @@ contract GameLogic is ReentrancyGuard, IDataStorageSchema
                  if(startingPositions[4] == 0)
                  {
                     startingPositions[4] = pIndex;
-                    axis[4] = shipAxis == '0' ? AxisType.X : AxisType.Y; 
+                    axis[4] = shipAxis == '1' ? AxisType.X : shipAxis == '2' ? AxisType.Y : AxisType.None; 
                  }
+                 carrierCount++;
                  orderedPositions[carrierCount -1] = pIndex;
+                 
              }
              
              
@@ -219,6 +226,59 @@ contract GameLogic is ReentrancyGuard, IDataStorageSchema
     }
     
 
+
+    function stringToBytes32(string memory source) external pure returns (bytes32 result) {
+    bytes memory tempEmptyStringTest = bytes(source);
+    if (tempEmptyStringTest.length == 0) {
+        return 0x0;
+    }
+
+    assembly {
+        result := mload(add(source, 32))
+    }
+    }
+    
+    function getBytes32(bytes32 value) external pure returns(bytes32)
+    {
+        return value;
+    }
+    
+    function getBytes32FromBytes(bytes memory value, uint index) external pure returns(bytes32)
+    {
+        bytes32 el;
+        uint position = 32 * (index + 1);
+        //Require That the length of the bytes covers the position to be read from
+        require(value.length >= position, "The value requested is not within the range of the bytes");
+       assembly {
+        el := mload(add(value, position))
+        }
+        
+        return el;
+    }
+    
+    //Gets a slice from a string
+    function getSlice(uint256 begin, uint256 end, string memory text) external pure returns (string memory) {
+        bytes memory a = new bytes(end-begin+1);
+        for(uint i=0;i<=end-begin;i++){
+            a[i] = bytes(text)[i+begin-1];
+        }
+        return string(a);
+    }
+    
+
+  function getSliceBytes32(uint256 begin, uint256 end, bytes32  text) public pure returns (bytes memory ) {
+        bytes memory a = new bytes(end-begin+1);
+        for(uint i=0;i<=end-begin;i++){
+            a[i] = text[i+begin-1];
+        }
+        return a;
+    }
+    
+    function getFirstCharacterBytes32(bytes32 word) external pure returns (byte)
+    {
+        return word[0];
+    }
+    
      
 
  }

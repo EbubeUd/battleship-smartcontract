@@ -20,7 +20,6 @@ import "./lib/merkletree/MerkleProof.sol";
 
     IDataStorage dataStorageContract;
     MerkleProof merkleProof;
-    HelperFunctions helperFunctions;
     IGameLogic gameLogic;
     address payable owner;
 
@@ -189,7 +188,7 @@ import "./lib/merkletree/MerkleProof.sol";
     
     
     
-    function verifyMerkleTreeLeafs(uint _battleId, bytes32[] memory _leafs, bytes[] memory _proofs) public  returns (bool)
+    function verifyMerkleTreeLeafs(uint _battleId, bytes memory _leafs, bytes[] memory _proofs) public  returns (bool)
     {
         //Get the required data
         BattleModel memory battle = dataStorageContract.getBattle(_battleId);
@@ -219,7 +218,7 @@ import "./lib/merkletree/MerkleProof.sol";
     {
         BattleModel memory battle = dataStorageContract.getBattle(_battleId);
         address playerAddress = msgSender();
-        bytes32[] memory leafs = dataStorageContract.getRevealedLeafs(_battleId, playerAddress);
+        bytes memory leafs = dataStorageContract.getRevealedLeafs(_battleId, playerAddress);
         
         //Requirements for process to continue
         require(battle.isCompleted, "Battle is not yet completed");
@@ -231,7 +230,7 @@ import "./lib/merkletree/MerkleProof.sol";
         uint8[] memory orderedPositions;
         uint8[] memory calculatedOrderedpositions;
         AxisType[5] memory axis;
-        (orderedPositions, axis) = gameLogic.getStartingpositionAndAxis(leafs);
+        (orderedPositions, axis) = gameLogic.getOrderedpositionAndAxis(leafs);
         uint8[5] memory startingPositions = [orderedPositions[0], orderedPositions[2], orderedPositions[5], orderedPositions[8], orderedPositions[12]];
         ShipType[5] memory shipType = [ShipType.Destroyer, ShipType.Submarine, ShipType.Cruiser, ShipType.Battleship, ShipType.Carrier];
         calculatedOrderedpositions = gameLogic.getPositionsOccupiedByShips(shipType, startingPositions, axis);

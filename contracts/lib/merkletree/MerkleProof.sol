@@ -2,12 +2,10 @@
 
 pragma solidity ^0.7.5;
 pragma experimental ABIEncoderV2;
-import "../HelperFunctions.sol";
 
 contract MerkleProof {
 
 
-    HelperFunctions helper = new HelperFunctions();
   function checkProof(bytes memory proof, bytes32 root, bytes32 hash) public pure returns (bool) {
     bytes32 el;
     bytes32 h = hash;
@@ -65,17 +63,14 @@ contract MerkleProof {
   }
   
   
-  function getBytes32FromString(string memory value) public view returns (bytes32)
-  {
-      return helper.stringToBytes32(value);
-  }
+
   
   
-  function checkProofsOrdered(bytes[] memory proofs, bytes32 root, bytes32[] memory leafs) public pure returns (bool)
+  function checkProofsOrdered(bytes[] memory proofs, bytes32 root, bytes memory leafs) public pure returns (bool)
   {
       bool valid = true;
       //Loop through the Tesla
-      for(uint8 i = 0; i < leafs.length; i++)
+      for(uint8 i = 0; i < leafs.length; i+=5)
       {
           bytes memory proof = proofs[i];
           bytes32 leaf = leafs[i];

@@ -3,11 +3,11 @@ pragma solidity ^0.7.5;
 pragma experimental ABIEncoderV2;
 interface IDataStorageSchema 
 {
-    enum PlayerType {Host, Client}
-    enum ShipType {Destroyer, Submarine, Cruiser, Battleship, Carrier, None}
-    enum AxisType {X, Y}
-    enum GameMode {Regular, Intermediate, Professional}
-    enum VerificationStatus { Unverified, Ok, Cheated}
+    enum PlayerType {None, Host, Client}
+    enum ShipType {None, Destroyer, Submarine, Cruiser, Battleship, Carrier}
+    enum AxisType {None, X, Y}
+    enum GameMode {None, Regular, Intermediate, Professional}
+    enum VerificationStatus {None, Unverified, Ok, Cheated}
 
        
        

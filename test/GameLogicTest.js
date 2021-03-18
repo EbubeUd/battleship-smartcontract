@@ -367,7 +367,7 @@ contract("GameLogic", accounts => {
     });
 
 
-    it("Should Verify Positions on Y Axis", () => 
+    it("Should Verify Ship Positions on Y Axis", () => 
     {
         let ships = [ShipType.Destroyer, ShipType.Submarine, ShipType.Cruiser, ShipType.Battleship, ShipType.Carrier];
         let startingPositions = [1,2,3,4,5];
@@ -396,7 +396,7 @@ contract("GameLogic", accounts => {
         })
     });
 
-    it("Should Verify Positions on X Axis", () =>
+    it("Should Verify Ship Positions on X Axis", () =>
     {
         let ships = [ShipType.Destroyer, ShipType.Submarine, ShipType.Cruiser, ShipType.Battleship, ShipType.Carrier];
         let startingPositions = [1,11,21,31,41];
@@ -419,8 +419,16 @@ contract("GameLogic", accounts => {
                 )
             }
         })
-    })
+    });
 
+    
+    it("Should Convert String to Bytes32", () => 
+    {
+        return GameLogic.deployed()
+        .then(instance => {
+            return instance.stringToBytes32("");
+        })
+    })
 
 
 });
