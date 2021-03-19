@@ -11,15 +11,7 @@ interface IDataStorageSchema
 
        
        
-    struct ShipPositionsModel
-    {
-        uint8[] hostPositionsAttacked;   //Holds the ordered positions of the Host attacked
-        uint8[] clientPositionsAttacked; //Holds the Ordered Positions of the client attacked
-        bytes32 hostEncryptedMerkleTree;    //Holds the encryped merkle tree positions of the host.
-        bytes32 clientEncryptedMerkleTree;  //Holds the encryped merkle tree positions Of the client
-        
-    }
-    
+
     
     
     
@@ -87,19 +79,18 @@ interface IDataStorageSchema
         uint8[] indexes;
     }
     
-    struct TransferModel
-    {
-        address payable recipient;
-        uint amount;
-    }
     
     struct AttackModel
     {
         address player;
         uint tiles;
     }
-    
 
+    struct ShipPosition
+    {
+        ShipType ship;
+        AxisType axis;
+    }
 
 
 

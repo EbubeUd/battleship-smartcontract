@@ -424,9 +424,94 @@ contract("GameLogic", accounts => {
     
     it("Should Convert String to Bytes32", () => 
     {
+        let word = "Helloworld";
+        let expectedHex = "0x48656c6c6f776f726c6400000000000000000000000000000000000000000000"
         return GameLogic.deployed()
         .then(instance => {
-            return instance.stringToBytes32("");
+            
+            return instance.stringToBytes32(word);
+        })
+        .then(result => {
+            assert.equal(
+                result,
+                expectedHex,
+                "Incorrect Hex Value"
+            )
+        })
+    });
+
+
+    it("Should get bytes 32 from bytes", () => 
+    {
+        let expectedResult = "0x48656c6c6f776f726c6400000000000000000000000000000000000000000000";
+        return GameLogic.deployed()
+        .then(instance => {
+            return instance.getBytes32FromBytes("0x48656c6c6f776f726c640000000000000000000000000000000000000000000048656c6c6f776f726c6400000000000000000000000000000000000000000000", 1);
+        })
+        .then(result => {
+            console.log(result);
+            assert.equal(
+                result,
+                expectedResult,
+                "Incorrect value"
+            )
+        })
+    });
+
+    
+    it("Should get slice from string", () => 
+    {
+        let expectedResult = "oworl";
+        let stringValue = "helloworld";
+
+        return GameLogic.deployed()
+        .then(instance => {
+            return instance.getSlice(5, 9, stringValue);
+        })
+        .then(result => {
+            console.log(result);
+            assert.equal(
+                result,
+                expectedResult,
+                "Incorrect Result"
+            )
+        })
+    });
+
+    it("Should Get Ordered Positions and axis of ships", () => 
+    {
+        let expectedPositions = [1,11,2,12,22,3,13,23,4,14,24,34,5,15,25,35,45];
+        let expectedAxis = [AxisType.Y, AxisType.Y, AxisType.Y, AxisType.Y, AxisType.Y];
+
+        return GameLogic.deployed()
+        .then(instance => {
+            let positionString = "1200220032004200520000110011001100110011120022003200420052000011001100110011001100112200320042005200001100110011001100110011001100114200520000110011001100110011001100110011001152000011001100110011001100110011001100110011001100110011001100110011001100110011001100110011001100110011001100110011001100110011001100110011001100110011001100110011001100110011001100110011001100110011001100110011001100110011";
+            return instance.getOrderedpositionAndAxis(positionString);
+        })
+        .then(result => {
+            
+            let positions = result[0];
+            let axis = result[1];
+
+            for(var i = 0; i < positions.length; i++)
+            {
+                console.log(positions[i].words[0]);
+                assert.equal(
+                    positions[i].words[0],
+                    expectedPositions[i],
+                    "Incorrect Position"
+                )
+            }
+
+            for(var i = 0; i < axis.length; i++)
+            {
+                console.log(axis[i].words[0]);
+                assert.equal(
+                    axis[i].words[0],
+                    expectedAxis[i],
+                    "Incorrect Axis"
+                )
+            }
         })
     })
 

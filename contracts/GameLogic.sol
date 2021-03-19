@@ -13,6 +13,7 @@ contract GameLogic is ReentrancyGuard, IDataStorageSchema
      mapping(ShipType => uint8) shipSize;
      mapping (ShipType => uint8[]) shipIndexes;
      mapping (uint8 => ShipType) shipFromIndex;
+     mapping (string => ShipPosition) shipPositionMapping;
      uint8 sumOfShipSizes;
      uint8 gridDimensionX;
      uint8 gridDimensionY;
@@ -58,11 +59,23 @@ contract GameLogic is ReentrancyGuard, IDataStorageSchema
              shipFromIndex[i] = shipType;
          }
          
+
          shipSize[ShipType.Destroyer] = 2;
          shipSize[ShipType.Submarine] = 3;
          shipSize[ShipType.Cruiser] = 3;
          shipSize[ShipType.Battleship] = 4;
          shipSize[ShipType.Carrier] = 5;
+
+         shipPositionMapping["11"] = ShipPosition(ShipType.Destroyer,AxisType.X);
+         shipPositionMapping["12"] = ShipPosition(ShipType.Destroyer, AxisType.Y);
+         shipPositionMapping["21"] = ShipPosition(ShipType.Submarine, AxisType.X);
+         shipPositionMapping["22"] = ShipPosition(ShipType.Submarine, AxisType.Y);
+         shipPositionMapping["31"] = ShipPosition(ShipType.Cruiser, AxisType.X);
+         shipPositionMapping["32"] = ShipPosition(ShipType.Cruiser, AxisType.Y);
+         shipPositionMapping["41"] = ShipPosition(ShipType.Battleship, AxisType.X);
+         shipPositionMapping["42"] = ShipPosition(ShipType.Battleship, AxisType.Y);
+         shipPositionMapping["51"] = ShipPosition(ShipType.Carrier, AxisType.X);
+         shipPositionMapping["52"] = ShipPosition(ShipType.Carrier, AxisType.Y);
          
          gridSquare = gridDimensionX * gridDimensionY;
      }
@@ -120,90 +133,68 @@ contract GameLogic is ReentrancyGuard, IDataStorageSchema
      }
      
   
-     function getOrderedpositionAndAxis(bytes32[] memory positions) external pure returns(uint8[] memory, AxisType[5] memory)
+     function getOrderedpositionAndAxis(string memory positions) external view returns(uint16[] memory, AxisType[5] memory)
      {
-        uint8[5] memory startingPositions = [0, 0 , 0 , 0, 0];
-        AxisType[5] memory axis;
-        uint8[] memory orderedPositions = new uint8[](17);
-        uint destroyerCount = 0;
-        uint submarineCount = 0;
-        uint cruiserCount = 0;
-        uint battleshipCount = 0;
-        uint carrierCount = 0;
-   
-        bytes memory pos = getSliceBytes32(1, 5, positions[0]);
+        AxisType[5] memory axis = [AxisType.None, AxisType.None, AxisType.None, AxisType.None, AxisType.None];
+        uint16[] memory orderedPositions = new uint16[](17);
 
-         for(uint8 i = 0; i < positions.length; i+=5)
+
+
+        uint8 destroyerCount = 0;
+        uint8 submarineCount = 2;
+        uint8 cruiserCount = 5;
+        uint8 battleshipCount = 8;
+        uint8 carrierCount = 12;
+
+        ShipPosition memory shipPosition = ShipPosition(ShipType.None, AxisType.None);
+        string memory shipPositionKey = "";
+
+         for(uint16 i = 0; i < 400; i+=4)
          {
-             byte shipIndex = pos[0];
-             byte shipAxis = pos[1];
-             uint8 pIndex = i+1;
+
+             shipPositionKey = getSlice(i+1, i+2, positions);
+             shipPosition = shipPositionMapping[shipPositionKey];
+
              
              
              //Destroyer
-             if(shipIndex == '1') 
+             if(shipPosition.ship == ShipType.Destroyer) 
              {
-                 if(startingPositions[0] == 0)
-                 {
-                    startingPositions[0] = pIndex;
-                    axis[0] = shipAxis == '1' ? AxisType.X : shipAxis == '2'? AxisType.Y : AxisType.None;
-                 }
-                 destroyerCount++;
-                 orderedPositions[destroyerCount -1] = pIndex;
-                 
+                 if(axis[0] == AxisType.None) axis[0] = shipPosition.axis;
+                 orderedPositions[destroyerCount] = (i/4) + 1;
+                destroyerCount++;
              }
              
              //Submarine
-             if(shipIndex == '2')
+             if(shipPosition.ship == ShipType.Submarine)
              {
-                 if(startingPositions[1] == 0)
-                 {
-                    startingPositions[1] = pIndex;
-                    axis[1] = shipAxis == '1' ? AxisType.X : shipAxis ==  '2' ? AxisType.Y : AxisType.None;
-                 }
-                 submarineCount++;
-                 orderedPositions[submarineCount -1] = pIndex;
-                 
-
+                if(axis[1] == AxisType.None) axis[1] = shipPosition.axis;
+                orderedPositions[submarineCount] = (i/4) + 1;
+                submarineCount++;
              }
              
              //Cruiser
-             if(shipIndex == '3') 
+             if(shipPosition.ship == ShipType.Cruiser)
              {
-                 if(startingPositions[2] == 0)
-                 {
-                    startingPositions[2] = pIndex;
-                    axis[2] = shipAxis == '1' ? AxisType.X : shipAxis == '2' ? AxisType.Y : AxisType.None;
-                 }
-                   cruiserCount++;
-                 orderedPositions[cruiserCount -1] = pIndex;
-               
+                if(axis[2] == AxisType.None) axis[2] = shipPosition.axis;
+                orderedPositions[cruiserCount] = (i/4) + 1;
+                cruiserCount++;
              }
              
              //Battleship
-             if(shipIndex == '4') 
+             if(shipPosition.ship == ShipType.Battleship)
              {
-                 if(startingPositions[3] == 0)
-                 {
-                    startingPositions[3] = pIndex;
-                    axis[3] = shipAxis == '1' ? AxisType.X : shipAxis == '2' ? AxisType.Y : AxisType.None;
-                 }
-                 battleshipCount++;
-                 orderedPositions[battleshipCount -1] = pIndex;
-                 
+                if(axis[3] == AxisType.None) axis[3] = shipPosition.axis;
+                orderedPositions[battleshipCount] = (i/4) + 1;
+                battleshipCount++;
              }
              
              //Carrier
-             if(shipIndex == '5') 
+             if(shipPosition.ship == ShipType.Carrier)
              {
-                 if(startingPositions[4] == 0)
-                 {
-                    startingPositions[4] = pIndex;
-                    axis[4] = shipAxis == '1' ? AxisType.X : shipAxis == '2' ? AxisType.Y : AxisType.None; 
-                 }
-                 carrierCount++;
-                 orderedPositions[carrierCount -1] = pIndex;
-                 
+                if(axis[4] == AxisType.None) axis[4] = shipPosition.axis;
+                orderedPositions[carrierCount] = (i/4) + 1;
+                carrierCount++;
              }
              
              
@@ -238,12 +229,9 @@ contract GameLogic is ReentrancyGuard, IDataStorageSchema
     }
     }
     
-    function getBytes32(bytes32 value) external pure returns(bytes32)
-    {
-        return value;
-    }
+
     
-    function getBytes32FromBytes(bytes memory value, uint index) external pure returns(bytes32)
+    function getBytes32FromBytes(bytes memory value, uint index) public pure returns(bytes32)
     {
         bytes32 el;
         uint position = 32 * (index + 1);
@@ -257,7 +245,7 @@ contract GameLogic is ReentrancyGuard, IDataStorageSchema
     }
     
     //Gets a slice from a string
-    function getSlice(uint256 begin, uint256 end, string memory text) external pure returns (string memory) {
+    function getSlice(uint256 begin, uint256 end, string memory text) public pure returns (string memory) {
         bytes memory a = new bytes(end-begin+1);
         for(uint i=0;i<=end-begin;i++){
             a[i] = bytes(text)[i+begin-1];
@@ -266,19 +254,6 @@ contract GameLogic is ReentrancyGuard, IDataStorageSchema
     }
     
 
-  function getSliceBytes32(uint256 begin, uint256 end, bytes32  text) public pure returns (bytes memory ) {
-        bytes memory a = new bytes(end-begin+1);
-        for(uint i=0;i<=end-begin;i++){
-            a[i] = text[i+begin-1];
-        }
-        return a;
-    }
-    
-    function getFirstCharacterBytes32(bytes32 word) external pure returns (byte)
-    {
-        return word[0];
-    }
-    
      
 
  }
