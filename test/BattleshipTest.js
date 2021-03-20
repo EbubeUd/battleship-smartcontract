@@ -20,10 +20,16 @@ contract("Battleship", accounts => {
    
 
             battleShip = instance;
-            return instance.joinLobby(gamemode, rootHash, encryptedMerkleTree, { from: accounts[1] });
+            return instance.joinLobby(gamemode, rootHash, encryptedMerkleTree);
         })
         .then(result => {
-            console.log(result.logs[0].args);
+
+            
+            assert.equal(
+                result.logs[0].event,
+                "PlayerJoinedLobby",
+                "Event must indicate that a player has joined the lobby"
+            );
 
             assert.equal(
                 result.logs[0].args['0'],
@@ -36,9 +42,19 @@ contract("Battleship", accounts => {
                 gamemode,
                 "Game mode is not valid"
             )
-            return true;
+            return battleShip.joinLobby(gamemode, rootHash, encryptedMerkleTree, {from: accounts[1]});
+        })
+        .then(result => {
+            console.log(result);
+
+
+            assert.equal(
+                result.logs[0].event,
+                "BattleStarted",
+                "Event must indicate that a battle has started"
+            );
         })
  
-    })
+    });
 
 })
