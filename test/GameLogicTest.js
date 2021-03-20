@@ -449,7 +449,6 @@ contract("GameLogic", accounts => {
             return instance.getBytes32FromBytes("0x48656c6c6f776f726c640000000000000000000000000000000000000000000048656c6c6f776f726c6400000000000000000000000000000000000000000000", 1);
         })
         .then(result => {
-            console.log(result);
             assert.equal(
                 result,
                 expectedResult,
@@ -469,7 +468,6 @@ contract("GameLogic", accounts => {
             return instance.getSlice(5, 9, stringValue);
         })
         .then(result => {
-            console.log(result);
             assert.equal(
                 result,
                 expectedResult,
