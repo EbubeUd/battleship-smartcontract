@@ -8,19 +8,24 @@ const GameMode = IDataStorageSchema.GameMode;
 contract("Battleship", accounts => {
 
     let battleShip;
+    let battleId;
+    let encryptedMerkleTree = "encryptedmerkletree";
+
 
     it("Should Join a Lobby", () => 
     {
+        let playerOne = accounts[0];
+        let playerTwo = accounts[1];
         let rootHash = "0x9f7f8d1d8d0ff72b5492a6dca4170f592c0735ca31dcb3b99cc6305160f8f66f";
         let gamemode = GameMode.Regular;
-        let encryptedMerkleTree = "encryptedmerkletree";
+        
 
         return Battleship.deployed()
         .then(instance => {
    
 
             battleShip = instance;
-            return instance.joinLobby(gamemode, rootHash, encryptedMerkleTree);
+            return instance.joinLobby(gamemode, rootHash, encryptedMerkleTree, {from: playerOne});
         })
         .then(result => {
 
@@ -33,7 +38,7 @@ contract("Battleship", accounts => {
 
             assert.equal(
                 result.logs[0].args['0'],
-                accounts[0],
+                playerOne,
                 "Creator account is not valid"
             );
 
@@ -42,19 +47,62 @@ contract("Battleship", accounts => {
                 gamemode,
                 "Game mode is not valid"
             )
-            return battleShip.joinLobby(gamemode, rootHash, encryptedMerkleTree, {from: accounts[1]});
+            return battleShip.joinLobby(gamemode, rootHash, encryptedMerkleTree, {from: playerTwo});
         })
         .then(result => {
-            console.log(result);
+            
+            battleId = result.logs[0].args._battleId.valueOf();
+            let _players = result.logs[0].args._players;
+            let _gameMode = result.logs[0].args._gameMode.valueOf();
 
-
+            //Check that the BattleStarted Event is emitted
             assert.equal(
                 result.logs[0].event,
                 "BattleStarted",
                 "Event must indicate that a battle has started"
             );
+
+            //Check if both players are included in the event log for the battle
+            assert.equal(
+                _players.includes(playerOne) && _players.includes(playerTwo),
+                true,
+                "Battle must include both players"
+            );
+
+            //Check that the game mode is equal to the game mode entered by the initial player and also equal to the game mode entered by the current player
+            assert.equal(
+                _gameMode == gamemode,
+                true,
+                "Game mode must be equal to the starting game mode for the Match/Lobby"
+            )
         })
  
     });
 
+    it("Should get Player's encrypted Positions", () => 
+    {
+        return battleShip.getPlayersEncryptedPositions(battleId)
+        .then(result => {
+            console.log(result.valueOf());
+
+            //Ensure that the merkle tree is correct
+            assert.equal(
+                result.valueOf(),
+                encryptedMerkleTree,
+                "Encrypted Merkletree value is wrong"
+            )
+        })
+    });
+
+
+    it("Should launch an attack", ()=>
+    {
+        let _previousPositionLeaf = "";
+        let _previousPositionProof = "";
+        let _attackingPosition = 1;
+        return battleShip.attack(battleId, _previousPositionLeaf, _previousPositionProof, _attackingPosition, {from: playerTwo});
+    })
+    .then(result => {
+        console.log(result);
+    })
 })

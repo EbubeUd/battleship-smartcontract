@@ -38,9 +38,9 @@ contract DataStorage is IDataStorageSchema {
     mapping (uint => mapping(address => uint8)) lastFiredPositionIndex; //Holds the index of the last fired position.
     mapping (uint => address) turn;
     mapping (uint => uint) lastPlayTime;
-    mapping (uint => mapping(address => bytes32[])) correctPositionsHit;   //Holds the array of correct positions hit. used to determine The winner in a match
+    mapping (uint => mapping(address => ShipPosition[])) correctPositionsHit;   //Holds the array of correct positions hit. used to determine The winner in a match
     mapping (uint => mapping(address => VerificationStatus)) battleVerification;    //Holds each player's verification status in a match.
-    mapping (uint => mapping(address => bytes)) revealedLeafs;  //Holds the revealed leafs of the suspected winner of the each battle.
+    mapping (uint => mapping(address => string)) revealedLeafs;  //Holds the revealed leafs of the suspected winner of the each battle.
     
     mapping (GameMode => LobbyModel) lobbyMap;
     mapping (GameMode => GameModeDetail) gameModeMapping;
@@ -246,14 +246,14 @@ contract DataStorage is IDataStorageSchema {
         return positionsAttacked[_battleId][_player];
     }
     
-    function getCorrectPositionsHit(uint _battleId, address _player) external view returns(bytes32[] memory)
+    function getCorrectPositionsHit(uint _battleId, address _player) external view returns(ShipPosition[] memory)
     {
         return correctPositionsHit[_battleId][_player];
     }
     
-    function addToCorrectPositionsHit(uint _battleId, address _player, bytes32 _shipType) external returns (bool)
+    function addToCorrectPositionsHit(uint _battleId, address _player, ShipPosition memory _shipPosition) external returns (bool)
     {
-        correctPositionsHit[_battleId][_player].push(_shipType);
+        correctPositionsHit[_battleId][_player].push(_shipPosition);
         return true;
     }
     
@@ -280,17 +280,18 @@ contract DataStorage is IDataStorageSchema {
     }
     
     
-    function getRevealedLeafs(uint _battleId, address _playerAddress) external view returns(bytes memory)
+    function getRevealedLeafs(uint _battleId, address _playerAddress) external view returns(string memory)
     {
         return revealedLeafs[_battleId][_playerAddress];
     }
     
     
-    function setRevealedLeafs(uint _battleId, address _playerAddress, bytes memory _revealedLeafs) external returns(bool)
+    function setRevealedLeafs(uint _battleId, address _playerAddress, string memory _revealedLeafs) external returns(bool)
     {
         revealedLeafs[_battleId][_playerAddress] = _revealedLeafs;
         return true;
     }
-    
+
+ 
     
 }

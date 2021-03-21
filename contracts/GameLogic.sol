@@ -243,6 +243,19 @@ contract GameLogic is ReentrancyGuard, IDataStorageSchema
         
         return el;
     }
+
+    function getSliceOfBytesArray(bytes memory _bytesArray, uint16 _indexStart, uint16 _indexStop) external pure returns(bytes memory)
+    {
+        bytes memory value = new bytes(_indexStop-_indexStart+1);
+        uint position = 32 * (_indexStop + 1);
+        require(_bytesArray.length >= _indexStop, "The value requested is not within the range of the bytes");
+        
+        for(uint i=0;i<=_indexStart-_indexStart;i++){
+            value[i] = _bytesArray[i+_indexStart-1];
+        }
+
+        return value;
+    }
     
     //Gets a slice from a string
     function getSlice(uint256 begin, uint256 end, string memory text) public pure returns (string memory) {
@@ -252,6 +265,12 @@ contract GameLogic is ReentrancyGuard, IDataStorageSchema
         }
         return string(a);
     }
+
+    function getShipPosition(string memory positionKey) external view returns (ShipPosition memory)
+    {
+        return shipPositionMapping[positionKey];
+    }
+    
     
 
      

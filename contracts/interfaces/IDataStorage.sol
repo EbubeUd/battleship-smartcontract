@@ -51,8 +51,8 @@ interface IDataStorage is IDataStorageSchema
     function addPositionAttacked(uint _battleId, address _player, uint8 position) external returns(bool);
     function getPositionsAttacked(uint _battleId, address _player) external view returns(uint8[] memory);
     
-    function getCorrectPositionsHit(uint _battleId, address _player) external view returns(bytes32[] memory);
-    function addToCorrectPositionsHit(uint _battleId, address _player, bytes32 _shipType) external returns (bool);
+    function getCorrectPositionsHit(uint _battleId, address _player) external view returns(ShipPosition[] memory);
+    function addToCorrectPositionsHit(uint _battleId, address _player, ShipPosition memory _shipPosition) external returns (bool);
     
     function getVerificationStatus(uint _battleId, address _player) external view returns(VerificationStatus);
     function setVerificationStatus(uint _battleId, address _player, VerificationStatus _status) external returns (bool);
@@ -60,6 +60,6 @@ interface IDataStorage is IDataStorageSchema
     function getTransactionOfficer() external view returns(address);
     function setTransationOfficer(address payable _transactionOfficer) external returns(bool);
     
-    function getRevealedLeafs(uint _battleId, address _playerAddress) external view returns(bytes memory);
-    function setRevealedLeafs(uint _battleId, address _playerAddress, bytes memory _revealedLeafs) external returns(bool);
+    function getRevealedLeafs(uint _battleId, address _playerAddress) external view returns(string memory);
+    function setRevealedLeafs(uint _battleId, address _playerAddress, string memory _revealedLeafs) external returns(bool);
 }
