@@ -248,7 +248,7 @@ contract GameLogic is ReentrancyGuard, IDataStorageSchema
     {
         bytes memory value = new bytes(_indexStop-_indexStart+1);
         uint position = 32 * (_indexStop + 1);
-        require(_bytesArray.length >= _indexStop, "The value requested is not within the range of the bytes");
+        require(_bytesArray.length >= position, "The value requested is not within the range of the bytes");
         
         for(uint i=0;i<=_indexStart-_indexStart;i++){
             value[i] = _bytesArray[i+_indexStart-1];
