@@ -10,12 +10,12 @@ contract("Battleship", accounts => {
     let battleShip;
     let battleId;
     let encryptedMerkleTree = "encryptedmerkletree";
-
+    let playerOne = accounts[0];
+    let playerTwo = accounts[1];
 
     it("Should Join a Lobby", () => 
     {
-        let playerOne = accounts[0];
-        let playerTwo = accounts[1];
+  
         let rootHash = "0x9f7f8d1d8d0ff72b5492a6dca4170f592c0735ca31dcb3b99cc6305160f8f66f";
         let gamemode = GameMode.Regular;
         
@@ -97,12 +97,13 @@ contract("Battleship", accounts => {
 
     it("Should launch an attack", ()=>
     {
-        let _previousPositionLeaf = "";
-        let _previousPositionProof = "";
+        let _previousPositionLeaf = "00000";
+        let _previousPositionProof = "0x00";
         let _attackingPosition = 1;
-        return battleShip.attack(battleId, _previousPositionLeaf, _previousPositionProof, _attackingPosition, {from: playerTwo});
+        return battleShip.attack(battleId, _previousPositionLeaf, _previousPositionProof, _attackingPosition, {from: playerTwo})
+        .then(result => {
+            console.log(result);
+        })
     })
-    .then(result => {
-        console.log(result);
-    })
+
 })
