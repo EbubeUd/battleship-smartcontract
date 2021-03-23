@@ -71,6 +71,10 @@ contract DataStorage is IDataStorageSchema {
         maxNumberOfMissiles = 5;
         isTest = _isTest;
         gameLogic = IGameLogic(_gameLogicAddress);
+
+        gameModeMapping[GameMode.Regular] = GameModeDetail(minStakingAmount, GameMode.Regular, minTimeRequiredForPlayerToRespond);
+        gameModeMapping[GameMode.Intermediate] = GameModeDetail(minStakingAmount, GameMode.Regular, minTimeRequiredForPlayerToRespond);
+        gameModeMapping[GameMode.Professional] = GameModeDetail(minStakingAmount, GameMode.Regular, minTimeRequiredForPlayerToRespond);
     }
     
 

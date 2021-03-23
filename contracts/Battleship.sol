@@ -53,7 +53,7 @@ import "./lib/merkletree/MerkleProof.sol";
         GameModeDetail memory gameModeDetail = dataStorageContract.getGameModeDetails(_gameMode);
         
         //Require that the amount of money sent in greater or equal to the required amount for this mode.
-        require(deposit >= gameModeDetail.stake, "The amount of money deposited must be equal to the staking amount for this game mode");
+        require(deposit == gameModeDetail.stake, "The amount of money deposited must be equal to the staking amount for this game mode");
         
         //Get the Lobby
         LobbyModel memory lobby = dataStorageContract.getLobby(_gameMode);
@@ -85,6 +85,10 @@ import "./lib/merkletree/MerkleProof.sol";
             dataStorageContract.setMerkleTreeRoot(battleId, battle.host, lobby.positionRoot);
             dataStorageContract.setMerkleTreeRoot(battleId, battle.client, _root);
             
+            //Set the Last Play Time
+            dataStorageContract.setLastPlayTime(battleId, block.timestamp);
+            dataStorageContract.setTurn(battleId, player);
+
             lobby.occupant = address(0);
             lobby.isOccupied = false;
             lobby.positionRoot = "0x00";

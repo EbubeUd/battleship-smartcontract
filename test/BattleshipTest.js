@@ -25,7 +25,8 @@ contract("Battleship", accounts => {
    
 
             battleShip = instance;
-            return instance.joinLobby(gamemode, rootHash, encryptedMerkleTree, {from: playerOne});
+            let valueInWei =  1000000000000000;
+            return instance.joinLobby(gamemode, rootHash, encryptedMerkleTree, {from: playerOne, value : valueInWei});
         })
         .then(result => {
 
@@ -47,7 +48,8 @@ contract("Battleship", accounts => {
                 gamemode,
                 "Game mode is not valid"
             )
-            return battleShip.joinLobby(gamemode, rootHash, encryptedMerkleTree, {from: playerTwo});
+            let valueInWei =  1000000000000000;
+            return battleShip.joinLobby(gamemode, rootHash, encryptedMerkleTree, {from: playerTwo, value: valueInWei});
         })
         .then(result => {
             
