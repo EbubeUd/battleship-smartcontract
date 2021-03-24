@@ -35,9 +35,9 @@ import "./lib/merkletree/MerkleProof.sol";
     event PlayerJoinedLobby(address _playerAddress, GameMode _gameMode);
     event BattleStarted(uint _battleId, GameMode _gameMode, address[2] _players);
     event ConfirmShotStatus(uint _battleId, address _confirmingPlayer, address _opponent, uint8 _position, ShipPosition _shipDetected);
-    event AttackLaunched(uint _battleId, address _launchingPlayer, address opponent, uint8 _position);
+    event AttackLaunched(uint _battleId, address _launchingPlayer, address _opponent, uint8 _position);
     event WinnerDetected(uint _battleId, address _winnerAddress, address _opponentAddress);
-    event ConfirmWinner(uint _battleId, address _winnerAddress, address _opponentAddress, uint reward);
+    event ConfirmWinner(uint _battleId, address _winnerAddress, address _opponentAddress, uint _reward);
     event Transfer(address _to, uint _amount, uint _balance);
 
     
@@ -170,8 +170,6 @@ import "./lib/merkletree/MerkleProof.sol";
     {
         return dataStorageContract.getPositionsAttacked(_battleId, _player);
     }
-    
-    
 
     
     
@@ -196,8 +194,6 @@ import "./lib/merkletree/MerkleProof.sol";
         
         return true;
     }
-    
-    
 
     
     function collectReward(uint _battleId) public returns (bool)
@@ -227,9 +223,6 @@ import "./lib/merkletree/MerkleProof.sol";
     }
     
   
-
-    
-    
     function transfer(address payable _recipient, uint _amount) private 
      {
          (bool success, ) = _recipient.call{value : _amount}("");

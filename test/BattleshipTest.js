@@ -53,7 +53,8 @@ contract("Battleship", accounts => {
         })
         .then(result => {
             
-            battleId = result.logs[0].args._battleId.valueOf();
+            battleId = result.logs[0].args._battleId;
+
             let _players = result.logs[0].args._players;
             let _gameMode = result.logs[0].args._gameMode.valueOf();
 
@@ -85,7 +86,6 @@ contract("Battleship", accounts => {
     {
         return battleShip.getPlayersEncryptedPositions(battleId)
         .then(result => {
-            console.log(result.valueOf());
 
             //Ensure that the merkle tree is correct
             assert.equal(
@@ -104,7 +104,87 @@ contract("Battleship", accounts => {
         let _attackingPosition = 1;
         return battleShip.attack(battleId, _previousPositionLeaf, _previousPositionProof, _attackingPosition, {from: playerTwo})
         .then(result => {
-            console.log(result);
+            
+            let confirmShotStatusEvent = result.logs[0];
+            let attackLaunchedEvent = result.logs[1];
+            // console.log(confirmShotStatusEvent);
+            // console.log(attackLaunchedEvent);
+    
+            assert.equal(
+                result.receipt.status,
+                true,
+                "Transaction must have a successful receipt status"
+            );
+
+            assert.equal(
+                confirmShotStatusEvent.event,
+                "ConfirmShotStatus",
+                "First log event must be of type Confirm Shot logs"
+            );
+
+            assert.equal(
+                confirmShotStatusEvent.args._battleId.toNumber(),
+                battleId.toNumber(),
+                "Battle Id is not valid"
+            );
+
+            assert.equal(
+                confirmShotStatusEvent.args._confirmingPlayer,
+                playerTwo,
+                "Confirming player is not valid"
+            );
+
+            assert.equal(
+                confirmShotStatusEvent.args._opponent,
+                playerOne,
+                "Opponent Player is not valid"
+            );
+
+            assert.equal(
+                confirmShotStatusEvent.args._position.toNumber(),
+                0,
+                "Previous Attacked Position is not valid"
+            );
+
+            assert.equal(
+                confirmShotStatusEvent.args._shipDetected.ship,
+                ShipType.None,
+                "Previous Ship type must be of type none because this is the first attack to be launched"
+            );
+
+            assert.equal(
+                confirmShotStatusEvent.args._shipDetected.axis,
+                AxisType.None,
+                "Previous ship type type must be of Axis type none because this is the first attack to be launched"
+            )
+
+
+            assert.equal(
+                attackLaunchedEvent.args._battleId.toNumber(),
+                battleId.toNumber(),
+                "Battle Id is not valid"
+            );
+
+            assert.equal(
+                attackLaunchedEvent.args._launchingPlayer,
+                playerTwo,
+                "Attacking player is not valid"
+            );
+
+            assert.equal(
+                attackLaunchedEvent.args._opponent,
+                playerOne,
+                "Opponent player is not valid"
+            );
+
+            console.log("Position:", attackLaunchedEvent.args._position.toNumber());
+
+            assert.equal(
+                attackLaunchedEvent.args._position.toNumber(),
+                _attackingPosition,
+                "Attacking position is not valid"
+            )
+
         })
     })
 
