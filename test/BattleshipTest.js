@@ -13,10 +13,27 @@ contract("Battleship", accounts => {
     let playerOne = accounts[0];
     let playerTwo = accounts[1];
 
+    let playerOnePositions = [1,2,3,4,5,6,7,8,11,12,13,14,15,16,17,18,19];
+    let playerTwoPositions = [1,11,2,12,22,3,13,23,4,14,24,34,5,15,25,35,45];
+
+    let positionsAttackedByPlayerOne = [1,11,2,12,22,3,13,23,4,14,24,34,5,15,25,35,45];
+    let positionsAttackedByPlayerTwo = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17];
+
+    let previousPositionsLeafsSubmittedByPlayerOne = ["", "1100", "1100", "2100", "2100","2100", "3100", "3100", "3100", "0011", "0011", "4100", "4100", "4100", "4100", "5100", "5100", "5100"]
+    let previousLeafPositionsSubmittedByPlayerTwo = ["", "1200", "1200", "2200", "2200", "2200", "3200", "3200", "3200", "4200", "4200", "4200", "4200", "5200", "5200", "5200", "5200", "5200"];
+
+    let previousPositionProofSubmittedByPlayerOne = [];
+    let previousPositionProofSumbittedByPlayerTwo = [];
+
+    
+
+
+
     it("Should Join a Lobby", () => 
     {
-  
-        let rootHash = "0x9f7f8d1d8d0ff72b5492a6dca4170f592c0735ca31dcb3b99cc6305160f8f66f";
+        let playerOneRootHash = "0xd22a8a4496b2d49a0a6c777d74a404c200dc24f99916fdfe5a72807b3355512e";
+        let playerTwoRootHash = "0x00871c4adab8e33d738b4555dbe16b70d1deab3bce2ec8a0fd215ab79e5ba275";
+
         let gamemode = GameMode.Regular;
         
 
@@ -26,7 +43,7 @@ contract("Battleship", accounts => {
 
             battleShip = instance;
             let valueInWei =  1000000000000000;
-            return instance.joinLobby(gamemode, rootHash, encryptedMerkleTree, {from: playerOne, value : valueInWei});
+            return instance.joinLobby(gamemode, playerOneRootHash, encryptedMerkleTree, {from: playerOne, value : valueInWei});
         })
         .then(result => {
 
@@ -49,7 +66,7 @@ contract("Battleship", accounts => {
                 "Game mode is not valid"
             )
             let valueInWei =  1000000000000000;
-            return battleShip.joinLobby(gamemode, rootHash, encryptedMerkleTree, {from: playerTwo, value: valueInWei});
+            return battleShip.joinLobby(gamemode, playerTwoRootHash, encryptedMerkleTree, {from: playerTwo, value: valueInWei});
         })
         .then(result => {
             
@@ -96,11 +113,12 @@ contract("Battleship", accounts => {
         })
     });
 
-
-    it("Should launch an attack", ()=>
+    it("Should launch an attack from first player", ()=>
     {
         let _previousPositionLeaf = "00000";
         let _previousPositionProof = "0x00";
+
+
         let _attackingPosition = 1;
         return battleShip.attack(battleId, _previousPositionLeaf, _previousPositionProof, _attackingPosition, {from: playerTwo})
         .then(result => {
@@ -186,6 +204,13 @@ contract("Battleship", accounts => {
             )
 
         })
-    })
+    });
+
+    it("Should launch an attack from the second player", ()=>
+    {
+
+    });
+
+
 
 })
